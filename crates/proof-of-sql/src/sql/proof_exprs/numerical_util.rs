@@ -109,7 +109,7 @@ pub(crate) fn add_subtract_columnar_values<'a, S: Scalar>(
         }
         (ColumnarValue::Literal(lhs), ColumnarValue::Literal(rhs)) => {
             ColumnarValue::Literal(LiteralValue::Scalar(
-                add_subtract_literals::<S>(&lhs, &rhs, lhs_scale, rhs_scale, is_subtract).into(),
+                add_subtract_literals::<S>(&lhs, &rhs, lhs_scale, rhs_scale, is_subtract).to_limbs(),
             ))
         }
     }
@@ -161,7 +161,7 @@ pub(crate) fn multiply_columnar_values<'a, S: Scalar>(
         }
         (ColumnarValue::Literal(lhs), ColumnarValue::Literal(rhs)) => {
             let result = lhs.to_scalar::<S>() * rhs.to_scalar();
-            ColumnarValue::Literal(LiteralValue::Scalar(result.into()))
+            ColumnarValue::Literal(LiteralValue::Scalar(result.to_limbs()))
         }
     }
 }

@@ -254,12 +254,7 @@ pub trait ComparisonOp {
             (
                 OwnedColumn::Decimal75(_, _, lhs_values),
                 OwnedColumn::Decimal75(_, _, rhs_values),
-            ) => Ok(Self::decimal_op_left_upcast(
-                lhs_values,
-                rhs_values,
-                lhs.column_type(),
-                rhs.column_type(),
-            )),
+            ) => Ok(lhs_values.iter().zip(rhs_values.iter()).map(|(l, r)| l == r).collect()),
 
             (OwnedColumn::Boolean(lhs), OwnedColumn::Boolean(rhs)) => {
                 Ok(slice_binary_op(lhs, rhs, Self::op))

@@ -1,6 +1,6 @@
 #![allow(clippy::module_inception)]
 
-use crate::base::{encode::VarInt, ref_into::RefInto, scalar::ScalarConversionError};
+use crate::base::{encode::VarInt, scalar::ScalarConversionError};
 use alloc::string::String;
 use bnum::types::U256;
 use core::ops::Sub;
@@ -40,8 +40,6 @@ pub trait Scalar:
     + core::convert::TryInto <i32>
     + core::convert::TryInto <i64>
     + core::convert::TryInto <i128>
-    + core::convert::Into<[u64; 4]>
-    + core::convert::From<[u64; 4]>
     + core::convert::From<u8>
     + core::cmp::Ord
     + core::ops::Neg<Output = Self>
@@ -51,7 +49,6 @@ pub trait Scalar:
     + ark_std::UniformRand //This enables us to get `Scalar`s as challenges from the transcript
     + num_traits::Inv<Output = Option<Self>> // Note: `inv` should return `None` exactly when the element is zero.
     + core::ops::SubAssign
-    + RefInto<[u64; 4]>
     + for<'a> core::convert::From<&'a String>
     + VarInt
     + core::convert::From<String>
@@ -83,4 +80,10 @@ pub trait Scalar:
     const CHALLENGE_MASK: U256;
     /// The largest n such that 2^n <=p
     const MAX_BITS: u8;
+
+    /// Converts a Scalar to a [u64; 4].
+    fn to_limbs(&self) -> [u64; 4];
+
+    /// Converts a [u64; 4] to a Scalar.
+    fn from_limbs(limbs: [u64; 4]) -> Self;
 }

@@ -174,7 +174,8 @@ fn decompose_scalars_to_words<'a, T, S: Scalar + 'a>(
     T: Copy + Into<S>,
 {
     for (i, scalar) in column_data.iter().enumerate() {
-        let scalar_array: [u64; 4] = (*scalar).into().into();
+        let s: S = (*scalar).into();
+        let scalar_array: [u64; 4] = s.to_limbs();
         // Convert the [u64; 4] into a slice of bytes
         let scalar_bytes = &cast_slice::<u64, u8>(&scalar_array)[..31];
 
@@ -443,7 +444,7 @@ pub(crate) fn verifier_evaluate_range_check<S: Scalar>(
     );
 
     // Retrieve word_vals_eval (evaluation for w-values)
-    // from the builder’s MLE evaluations
+    // from the builder's MLE evaluations
     let word_vals_eval = builder
         .rho_256_evaluation()
         .ok_or(ProofSizeMismatch::TooFewSumcheckVariables)?;
